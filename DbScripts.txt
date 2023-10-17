@@ -1,0 +1,57 @@
+CREATE TABLE Tbl_Employee (
+    EmpId INT IDENTITY(1,1) NOT NULL ,
+    EmpName NVARCHAR(75) NOT NULL,
+    Salary INT,
+    Manager INT
+    PRIMARY KEY (EmpId)
+);
+
+
+CREATE OR ALTER PROCEDURE [dbo].[EmployeeAddOrEdit]
+@EmpId INT,
+@EmpName NVARCHAR(75),
+@Salary INT,
+@Manager INT =NULL
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	IF @EmpId=0
+		BEGIN
+			INSERT INTO Tbl_Employee VALUES (@EmpName,@Salary,@Manager)
+		END
+	ELSE
+		BEGIN
+			UPDATE Tbl_Employee
+			SET EmpName=@EmpName,
+			Salary=@Salary,
+			Manager=@Manager
+			WHERE EmpId=@EmpId
+		END
+END
+GO
+
+CREATE OR ALTER PROCEDURE [dbo].[DeleteEmployeeByID]
+@EmpID INT
+AS
+BEGIN
+	Delete FROM Tbl_Employee WHERE EmpId=@EmpID
+END
+GO
+
+
+CREATE OR ALTER PROCEDURE [dbo].[GetEmployeeByID]
+@EmpID INT
+AS
+BEGIN
+	SELECT EmpId,EmpName,Salary,ISNULL(Manager,0) 'Manager' FROM Tbl_Employee WHERE EmpId=@EmpID
+END
+GO
+
+CREATE OR ALTER PROCEDURE [dbo].[GetAllEmployees]
+AS
+BEGIN
+	SELECT EmpId,EmpName,Salary,ISNULL(Manager,0) 'Manager' FROM Tbl_Employee
+END
+GO
